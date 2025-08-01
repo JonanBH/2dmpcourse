@@ -16,9 +16,9 @@ func _process(delta: float) -> void:
 	global_position += direction * SPEED * delta
 
 
-func start(direction : Vector2) -> void:
-	self.direction = direction
-	rotation = direction.angle()
+func start(dir : Vector2) -> void:
+	self.direction = dir
+	rotation = dir.angle()
 	
 
 

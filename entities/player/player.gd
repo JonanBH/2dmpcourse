@@ -3,6 +3,7 @@ class_name Player extends CharacterBody2D
 @onready var player_input_syncronizer_component: PlayerInputSynchronizerComponent = $PlayerInputSyncronizerComponent
 @onready var weapon_root: Node2D = $WeaponRoot
 @onready var fire_rate_timer: Timer = $FireRateTimer
+@onready var health_component: HealthComponent = $HealthComponent
 
 var bullet_scene : PackedScene = preload("uid://i6a54pjcj6nb")
 
@@ -11,9 +12,10 @@ var input_multiplayer_authority : int = 1
 
 func _ready() -> void:
 	player_input_syncronizer_component.set_multiplayer_authority(input_multiplayer_authority)
+	health_component.died.connect(_on_died)
 	
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var aim_position = weapon_root.global_position \
 			+ player_input_syncronizer_component.aim_vector
 	
@@ -38,3 +40,7 @@ func try_create_bullet() -> void:
 	get_parent().add_child(bullet, true)
 	
 	fire_rate_timer.start()
+
+
+func _on_died() -> void:
+	print("Player died")

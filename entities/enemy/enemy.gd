@@ -13,7 +13,7 @@ func _ready() -> void:
 		health_component.died.connect(_on_died)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if is_multiplayer_authority():
 		velocity = global_position.direction_to(target_position) * 40
 		move_and_slide()
