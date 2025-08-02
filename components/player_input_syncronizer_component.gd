@@ -13,5 +13,5 @@ func _process(_delta: float) -> void:
 
 func gather_input() -> void:
 	movement_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down", 0.2)
-	aim_vector = aim_root.global_position.direction_to(aim_root.get_global_mouse_position()).normalized()
+	aim_vector = aim_root.global_position.direction_to(aim_root.get_global_mouse_position())
 	is_attack_pressed = Input.is_action_pressed("attack")
