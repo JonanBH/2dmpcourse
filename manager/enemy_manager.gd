@@ -2,11 +2,14 @@ class_name EnemyManager
 extends Node
 
 signal round_changed(round_number : int)
+signal round_completed
+signal game_completed
 
 const ROUND_BASE_TIME := 10
 const ROUND_GROWTH := 5
 const BASE_ENEMY_SPAWN_TIME : float = 2.0
 const ENEMY_SPAWN_TIME_GROWTH : float = -0.15
+const MAX_ROUNDS : int = 10
 
 @export var enemy_scene : PackedScene
 @export var enemy_spawn_root : Node
@@ -53,7 +56,13 @@ func synchronize(to_peer_id : int = -1) -> void:
 
 @rpc("authority", "call_remote", "reliable")
 func _synchronize(data : Dictionary) -> void:
-	round_timer.wait_time = data.round_timer_time_left
+	var wait_time : float = data.round_timer_time_left
+	
+	if wait_time > 0:
+		round_timer.wait_time = wait_time
+	else:
+		round_timer.wait_time = 0.1
+	 
 	if data.round_time_is_running:
 		round_timer.start()
 	
@@ -84,8 +93,19 @@ func _check_round_completed() -> void:
 		return
 	
 	if spawned_enemies == 0:
-		print("Round complete")
-		begin_round()
+		print("Round completed")
+		round_completed.emit()
+		
+		if round_count == MAX_ROUNDS:
+			complete_game()
+		else:
+			begin_round()
+
+
+func complete_game() -> void:
+	await get_tree().create_timer(2).timeout
+	
+	game_completed.emit()
 
 
 func _on_spawn_interval_timer_timeout() -> void:
