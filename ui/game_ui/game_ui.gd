@@ -1,12 +1,34 @@
+class_name GameUI
 extends CanvasLayer
 
 @export var enemy_manager : EnemyManager
+@export var lobby_manager : LobbyManager
 
 @onready var timer_label: Label = %TimerLabel
 @onready var round_label: Label = %RoundLabel
+@onready var health_progress_bar: ProgressBar = %HealthProgressBar
+@onready var display_name_label: Label = %DisplayNameLabel
+@onready var ready_label: Label = %ReadyLabel
+@onready var not_ready_label: Label = %NotReadyLabel
+@onready var ready_count_label: Label = %ReadyCountLabel
+@onready var ready_up_container: VBoxContainer = %ReadyUpContainer
+@onready var round_info_container: VBoxContainer = %RoundInfoContainer
+
 
 func _ready() -> void:
 	enemy_manager.round_changed.connect(_on_round_began)
+	lobby_manager.self_peer_ready.connect(_on_self_peer_ready)
+	lobby_manager.peer_ready_state_changed.connect(_on_peer_ready_state_changed)
+	
+	var is_single_player := multiplayer.multiplayer_peer is OfflineMultiplayerPeer
+	
+	ready_up_container.visible = !is_single_player
+	round_info_container.visible = is_single_player
+	
+	ready_label.hide()
+	not_ready_label.show()
+	
+	lobby_manager.lobby_closed.connect(_on_lobby_closed)
 
 
 func _process(_delta: float) -> void:
@@ -15,3 +37,38 @@ func _process(_delta: float) -> void:
 
 func _on_round_began(round_number : int) -> void:
 	round_label.text = "Round %s" % round_number
+
+
+func connect_player(player : Player) -> void:
+	(func():
+		if multiplayer.multiplayer_peer is OfflineMultiplayerPeer:
+			display_name_label.text = "Player"
+		else:
+			display_name_label.text = player.display_name
+		
+		player.health_component.health_changed.connect(_on_health_changed)
+		_on_health_changed(player.health_component.current_health, \
+				player.health_component.max_health)
+		
+		
+	).call_deferred()
+	
+
+
+func _on_health_changed(current_health : int, max_health : int) -> void:
+	health_progress_bar.value = (float(current_health) / max_health) if\
+			max_health != 0 else 0.0
+
+
+func _on_self_peer_ready() -> void:
+	ready_label.show()
+	not_ready_label.hide()
+
+
+func _on_lobby_closed() -> void:
+	ready_up_container.hide()
+	round_info_container.show()
+
+
+func _on_peer_ready_state_changed(ready_count : int, total_count : int) -> void:
+	ready_count_label.text = "%s/%s READY" % [ready_count, total_count]

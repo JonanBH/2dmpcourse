@@ -1,7 +1,87 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://rgsrso7wjtkv"]
+[gd_resource type="Theme" load_steps=15 format=3 uid="uid://rgsrso7wjtkv"]
 
+[ext_resource type="Texture2D" uid="uid://b1e7wmteygxtn" path="res://assets/ui/buttons.png" id="1_8n3oo"]
 [ext_resource type="FontFile" uid="uid://bc7x2bcpxw624" path="res://resources/font/KarenFat.ttf" id="1_8tjqa"]
+[ext_resource type="Texture2D" uid="uid://cvm0x37lb34y5" path="res://assets/ui/panel.png" id="2_orw62"]
+[ext_resource type="Texture2D" uid="uid://cviek6grl6v07" path="res://assets/ui/progress_bar_outline.png" id="3_65ii4"]
+[ext_resource type="Texture2D" uid="uid://b20dwcb5md1ug" path="res://assets/ui/progress_bar_fill.png" id="4_j4h2o"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_56c54"]
+texture = ExtResource("1_8n3oo")
+texture_margin_left = 4.0
+texture_margin_top = 3.0
+texture_margin_right = 4.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(48, 2, 16, 16)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8n3oo"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8n3oo"]
+texture = ExtResource("1_8n3oo")
+texture_margin_left = 4.0
+texture_margin_top = 3.0
+texture_margin_right = 4.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(16, 2, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_orw62"]
+texture = ExtResource("1_8n3oo")
+texture_margin_left = 4.0
+texture_margin_top = 3.0
+texture_margin_right = 4.0
+texture_margin_bottom = 6.0
+region_rect = Rect2(0, 2, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_65ii4"]
+texture = ExtResource("1_8n3oo")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 5.0
+region_rect = Rect2(32, 2, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j4h2o"]
+texture = ExtResource("2_orw62")
+texture_margin_left = 4.0
+texture_margin_top = 5.0
+texture_margin_right = 4.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tu17m"]
+texture = ExtResource("2_orw62")
+texture_margin_left = 4.0
+texture_margin_top = 5.0
+texture_margin_right = 4.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iwyt8"]
+texture = ExtResource("3_65ii4")
+texture_margin_left = 3.0
+texture_margin_top = 3.0
+texture_margin_right = 3.0
+texture_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f2l62"]
+texture = ExtResource("4_j4h2o")
+texture_margin_left = 3.0
+texture_margin_top = 3.0
+texture_margin_right = 3.0
+texture_margin_bottom = 3.0
+modulate_color = Color(0.831373, 0.172549, 0.309804, 1)
 
 [resource]
 default_font = ExtResource("1_8tjqa")
 default_font_size = 16
+Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/colors/font_disabled_color = Color(1, 1, 1, 0.5)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(0.831373, 0.172549, 0.309804, 1)
+Button/styles/disabled = SubResource("StyleBoxTexture_56c54")
+Button/styles/focus = SubResource("StyleBoxEmpty_8n3oo")
+Button/styles/hover = SubResource("StyleBoxTexture_8n3oo")
+Button/styles/normal = SubResource("StyleBoxTexture_orw62")
+Button/styles/pressed = SubResource("StyleBoxTexture_65ii4")
+Panel/styles/panel = SubResource("StyleBoxTexture_j4h2o")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_tu17m")
+ProgressBar/styles/background = SubResource("StyleBoxTexture_iwyt8")
+ProgressBar/styles/fill = SubResource("StyleBoxTexture_f2l62")

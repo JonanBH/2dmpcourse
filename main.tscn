@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhfns2kme5t0f"]
+[gd_scene load_steps=11 format=3 uid="uid://bhfns2kme5t0f"]
 
 [ext_resource type="Script" uid="uid://bfacyf3ojev6w" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://cfrqb8qvkq1cv" path="res://assets/arena.png" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://djbre07o11565" path="res://manager/EnemyManager.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://8coukj0jhooo" path="res://ui/game_ui/game_ui.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://ut7xqrshyxiw" path="res://manager/lobby_manager.tscn" id="3_5vw27"]
 [ext_resource type="PackedScene" uid="uid://b425v48ulqwbe" path="res://game_camera.tscn" id="4_7mycd"]
+[ext_resource type="PackedScene" uid="uid://lsy1xi6lrwyf" path="res://ui/pause_menu/pause_menu.tscn" id="4_272bh"]
 [ext_resource type="Texture2D" uid="uid://dn24tt0tr4ala" path="res://assets/clip_mask.png" id="5_lquwl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
@@ -20,12 +22,18 @@ script = ExtResource("1_ig7tw")
 enemy_spawn_root = NodePath("../YSortRoot")
 spawn_rect = NodePath("../SpawnRect")
 
+[node name="LobbyManager" parent="." instance=ExtResource("3_5vw27")]
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://i6a54pjcj6nb", "uid://4oqp8w4q1nhf")
 spawn_path = NodePath("../YSortRoot")
 
-[node name="GameUI" parent="." node_paths=PackedStringArray("enemy_manager") instance=ExtResource("3_1bvp3")]
+[node name="GameUI" parent="." node_paths=PackedStringArray("enemy_manager", "lobby_manager") instance=ExtResource("3_1bvp3")]
 enemy_manager = NodePath("../EnemyManager")
+lobby_manager = NodePath("../LobbyManager")
+
+[node name="PauseMenu" parent="." instance=ExtResource("4_272bh")]
+visible = false
 
 [node name="GameCamera" parent="." instance=ExtResource("4_7mycd")]
 position = Vector2(320, 180)
