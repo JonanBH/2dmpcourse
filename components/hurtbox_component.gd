@@ -5,6 +5,7 @@ signal hit
 
 @export var health_component : HealthComponent
 
+var disable_collisions : bool = false
 var peer_id_filter : int = -1
 
 func _ready() -> void:
@@ -12,6 +13,9 @@ func _ready() -> void:
 
 
 func _handle_hit(hitbox_component : HitboxComponent) -> void:
+	if hitbox_component.is_hit_handled or disable_collisions:
+		return
+	
 	hitbox_component.register_hurtbox_hit(self)
 	hit.emit()
 	
@@ -27,8 +31,6 @@ func _on_area_entered(other_area : Area2D) -> void:
 	
 	if peer_id_filter > -1 and hitbox_component.source_peer_id != peer_id_filter:
 		return
-	
-	
 	
 	_handle_hit.call_deferred(other_area)
 	

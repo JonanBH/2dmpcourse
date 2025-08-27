@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://c5xs14wqlw742"]
+[gd_scene load_steps=13 format=3 uid="uid://c5xs14wqlw742"]
 
 [ext_resource type="Texture2D" uid="uid://btb55i4sg81g6" path="res://assets/particles.png" id="1_7ctkk"]
+[ext_resource type="AudioStream" uid="uid://bftq62ey0ltna" path="res://assets/audio/burst.wav" id="2_sdt8k"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_sdt8k"]
 particles_animation = true
@@ -49,6 +50,17 @@ tracks/0/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HitStreamPlayer")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
+}
 
 [sub_resource type="Animation" id="Animation_7ctkk"]
 resource_name = "default"
@@ -79,12 +91,32 @@ tracks/1/keys = {
 "method": &"queue_free"
 }]
 }
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HitStreamPlayer")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gfgy8"]
 _data = {
 &"RESET": SubResource("Animation_sdt8k"),
 &"default": SubResource("Animation_7ctkk")
 }
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_sdt8k"]
+random_pitch = 1.1
+random_volume_offset_db = 2.0
+streams_count = 1
+stream_0/stream = ExtResource("2_sdt8k")
 
 [node name="EnemyGroundParticles" type="Node2D"]
 
@@ -106,3 +138,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_gfgy8")
 }
 autoplay = "default"
+
+[node name="HitStreamPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_sdt8k")
+volume_db = -2.0
+max_polyphony = 3
+bus = &"sfx"

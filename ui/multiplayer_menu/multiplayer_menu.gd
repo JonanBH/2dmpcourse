@@ -36,6 +36,13 @@ func _ready() -> void:
 	port_text_edit.text = str(MultiplayerConfig.port)
 	ip_address_text_edit.text = MultiplayerConfig.ip_address
 	
+	UIAudioManager.register_buttons([
+		host_button,
+		back_button,
+		join_button,
+		error_confirm_button
+	])
+	
 	validate()
 
 

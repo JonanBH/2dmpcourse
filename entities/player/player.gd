@@ -16,9 +16,14 @@ const BASE_BULLET_DAMAGE : int = 1
 @onready var barrel_position: Marker2D = %BarrelPosition
 @onready var display_name_label: Label = $DisplayNameLabel
 @onready var activation_area_collision_shape: CollisionShape2D = $ActivationArea/ActivationAreaCollisionShape
+@onready var hurtbox_component: HurtboxComponent = $HurtboxComponent
+@onready var weapon_stream_player: AudioStreamPlayer2D = $WeaponStreamPlayer
+@onready var hit_stream_player: AudioStreamPlayer2D = $HitStreamPlayer
 
 var bullet_scene : PackedScene = preload("uid://i6a54pjcj6nb")
 var muzzle_flash_scene : PackedScene = preload("uid://fx6cvfwb5xo4")
+var ground_particles_scene : PackedScene = preload("uid://cciua6llfru2f")
+
 var is_dying : bool = false
 var display_name : String
 
@@ -37,14 +42,15 @@ func _ready() -> void:
 	else:
 		display_name_label.text = display_name
 	
-	if is_respawn:
-		health_component.current_health = 1
-	
 	if is_multiplayer_authority():
+		if is_respawn:
+			health_component.current_health = 1
 		health_component.died.connect(_on_died)
+		
+		hurtbox_component.hit.connect(_on_hit_by_hitbox)
 	
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_update_aim_position()
 	
 	var movement_vector :=  player_input_syncronizer_component.movement_vector
@@ -53,7 +59,10 @@ func _process(_delta: float) -> void:
 		if is_dying:
 			global_position = Vector2.RIGHT * 1000
 			return
-		velocity = movement_vector * get_movement_speed()
+		
+		var target_velocity := movement_vector * get_movement_speed()
+		
+		velocity = velocity.lerp(target_velocity, 1 - (exp(-20 * delta)))
 		
 		move_and_slide()
 		
@@ -138,6 +147,8 @@ func _play_fire_effects() -> void:
 	
 	if player_input_syncronizer_component.is_multiplayer_authority():
 		GameCamera.shake(1)
+	
+	weapon_stream_player.play()
 
 
 func kill() -> void:
@@ -164,5 +175,40 @@ func set_display_name(new_display_name : String) -> void:
 	display_name = new_display_name
 
 
+@rpc("authority", "call_local")
+func play_hit_effects() -> void:
+	
+	if player_input_syncronizer_component.is_multiplayer_authority():
+		GameCamera.shake(1)
+		hit_stream_player.play()
+	
+	spawn_hit_particles()
+	
+	hurtbox_component.disable_collisions = true
+	var tween := create_tween()
+	tween.set_loops(10)
+	tween.tween_property(visuals, "visible", false, 0.05)
+	tween.tween_property(visuals, "visible", true, 0.05)
+	tween.finished.connect(
+		func():
+			hurtbox_component.disable_collisions = false
+	)
+
+
+func spawn_hit_particles() -> void:
+	var death_particles : Node2D = ground_particles_scene.instantiate()
+	var background_node : Node = Main.background_mask
+	
+	if !is_instance_valid(background_node):
+		background_node = get_parent()
+	
+	background_node.add_child(death_particles)
+	death_particles.global_position = global_position
+
+
 func _on_died() -> void:
 	kill()
+
+
+func _on_hit_by_hitbox() -> void:
+	play_hit_effects.rpc()

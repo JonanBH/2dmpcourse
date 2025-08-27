@@ -1,13 +1,32 @@
-[gd_scene load_steps=17 format=3 uid="uid://4oqp8w4q1nhf"]
+[gd_scene load_steps=22 format=3 uid="uid://4oqp8w4q1nhf"]
 
 [ext_resource type="Script" uid="uid://drixbc6h6wkjo" path="res://entities/enemy/enemy.gd" id="1_im2q6"]
 [ext_resource type="Texture2D" uid="uid://df7mgfvue7pvb" path="res://entities/enemy/enemy_medium.png" id="1_ksmh7"]
 [ext_resource type="PackedScene" uid="uid://bbx7m03mkqsce" path="res://components/health_component.tscn" id="2_3fvr7"]
+[ext_resource type="AudioStream" uid="uid://begivtsiwh0aa" path="res://assets/audio/hit_1.wav" id="2_4ohlc"]
+[ext_resource type="AudioStream" uid="uid://bgd31homxwj7x" path="res://assets/audio/hit_2.wav" id="3_aqotc"]
 [ext_resource type="PackedScene" uid="uid://cagdrvllq4n4q" path="res://components/hurtbox_component.tscn" id="3_dt443"]
 [ext_resource type="Texture2D" uid="uid://dm7xsjrjrga4e" path="res://entities/enemy/attack_alert.png" id="4_d50e0"]
+[ext_resource type="AudioStream" uid="uid://c3adt0flfcxcc" path="res://assets/audio/hit_3.wav" id="4_ogeq8"]
 [ext_resource type="PackedScene" uid="uid://dxqxjjgtgmqjc" path="res://components/hitbox_component.tscn" id="5_4wwj3"]
 [ext_resource type="PackedScene" uid="uid://dbgtkl52cuoxp" path="res://components/hit_flash_sprite_component.tscn" id="5_61ikd"]
+[ext_resource type="AudioStream" uid="uid://box4avyg4ie0u" path="res://assets/audio/hit_4.wav" id="5_jfjhj"]
 [ext_resource type="Shader" uid="uid://dcohw70txvg72" path="res://resources/shader/hit_flash.gdshader" id="6_721x4"]
+
+[sub_resource type="Animation" id="Animation_eaj7m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/HitFlashSpriteComponent:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_721x4"]
 resource_name = "run"
@@ -26,26 +45,20 @@ tracks/0/keys = {
 "values": [Vector2(1, 1), Vector2(0.8, 1.2), Vector2(1.1, 0.9)]
 }
 
-[sub_resource type="Animation" id="Animation_eaj7m"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Visuals/HitFlashSpriteComponent:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_a8fs5"]
 _data = {
 &"RESET": SubResource("Animation_eaj7m"),
 &"run": SubResource("Animation_721x4")
 }
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_t1g2p"]
+random_pitch = 1.1
+random_volume_offset_db = 2.0
+streams_count = 4
+stream_0/stream = ExtResource("2_4ohlc")
+stream_1/stream = ExtResource("3_aqotc")
+stream_2/stream = ExtResource("4_ogeq8")
+stream_3/stream = ExtResource("5_jfjhj")
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_im2q6"]
 properties/0/path = NodePath(".:global_position")
@@ -83,6 +96,12 @@ libraries = {
 &"": SubResource("AnimationLibrary_a8fs5")
 }
 speed_scale = 0.7
+
+[node name="HitStreamPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_t1g2p")
+volume_db = -2.0
+max_polyphony = 3
+bus = &"sfx"
 
 [node name="HealthComponent" parent="." instance=ExtResource("2_3fvr7")]
 max_health = 2

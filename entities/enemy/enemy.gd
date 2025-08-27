@@ -26,6 +26,7 @@ var current_state : String:
 @onready var impact_particles_scene : PackedScene = preload("uid://dq7xj8covnp6s")
 @onready var ground_particles_scene : PackedScene = preload("uid://c5xs14wqlw742")
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var hit_stream_player: AudioStreamPlayer2D = $HitStreamPlayer
 
 
 func _ready() -> void:
@@ -85,7 +86,10 @@ func state_normal() -> void:
 			acquire_target()
 			target_aquisition_timer.start()
 	
-		if attack_cooldown_timer.is_stopped() and \
+		var can_attack := attack_cooldown_timer.is_stopped() or \
+				global_position.distance_to(target_position) < 16
+		
+		if can_attack and \
 				global_position.distance_to(target_position) < 150:
 			
 			state_machine.change_state(state_charge_attack)
@@ -186,10 +190,12 @@ func acquire_target() -> void:
 
 
 @rpc("authority", "call_local")
-func spawn_hit_particles() -> void:
+func spawn_hit_effects() -> void:
 	var hit_particle : Node2D = impact_particles_scene.instantiate()
 	hit_particle.global_position = hurtbox_component.global_position
 	get_parent().add_child(hit_particle)
+	
+	hit_stream_player.play()
 
 
 @rpc("authority", "call_local")
@@ -211,4 +217,4 @@ func _on_died() -> void:
 
 
 func _on_hit() -> void:
-	spawn_hit_particles.rpc()
+	spawn_hit_effects.rpc()

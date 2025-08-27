@@ -5,7 +5,7 @@ signal hit_hurtbox(hurtbox_component : HealthComponent)
 
 var damage : int = 1
 var source_peer_id : int = -1
-
+var is_hit_handled : bool = false
 
 func register_hurtbox_hit(hurtbox_component : HurtboxComponent) -> void:
 	hit_hurtbox.emit(hurtbox_component)

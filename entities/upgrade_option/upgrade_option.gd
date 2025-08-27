@@ -15,6 +15,7 @@ signal selected(index : int, for_peer_id : int)
 @onready var info_container: VBoxContainer = $InfoContainer
 @onready var title_label: Label = %TitleLabel
 @onready var description_label: Label = %DescriptionLabel
+@onready var hit_stream_player: AudioStreamPlayer2D = $HitStreamPlayer
 
 
 var upgrade_index : int
@@ -107,10 +108,12 @@ func kill_all(killed_name : String) -> void:
 
 
 @rpc("authority", "call_local")
-func spawn_hit_particles() -> void:
+func spawn_hit_effects() -> void:
 	var hit_particle : Node2D = impact_particles_scene.instantiate()
 	hit_particle.global_position = hurtbox_component.global_position
 	get_parent().add_child(hit_particle)
+	
+	hit_stream_player.play()
 
 
 func _on_died() -> void:
@@ -128,10 +131,10 @@ func _on_peer_disconnected(peer_id : int) -> void:
 
 
 func _on_hit() -> void:
-	spawn_hit_particles.rpc_id(peer_id_filter)
+	spawn_hit_effects.rpc_id(peer_id_filter)
 
 
-func _on_player_entered_detection_area(other_area : Area2D) -> void:
+func _on_player_entered_detection_area(_other_area : Area2D) -> void:
 	info_container.visible = true
 	print("Player entered dection area")
 

@@ -32,6 +32,7 @@ func _on_life_timer_timeout() -> void:
 
 
 func register_collision() -> void:
+	hitbox_component.is_hit_handled = true
 	queue_free()
 
 

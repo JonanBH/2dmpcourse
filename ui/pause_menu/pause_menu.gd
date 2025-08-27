@@ -5,16 +5,25 @@ signal quit_requested
 
 @onready var resume_button: Button = %ResumeButton
 @onready var quit_button: Button = %QuitButton
+@onready var options_button: Button = %OptionsButton
 
 var current_paused_peer : int = -1
+var options_scene : PackedScene = preload("uid://csqini3u8fjwq")
 
 
 func _ready() -> void:
 	resume_button.pressed.connect(_on_resume_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
+	options_button.pressed.connect(_on_options_pressed)
 	
 	if is_multiplayer_authority():
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	
+	
+	UIAudioManager.register_buttons([
+		resume_button,
+		quit_button
+	])
 
 
 func _input(event: InputEvent) -> void:
@@ -44,7 +53,9 @@ func request_unpause() -> void:
 @rpc("authority", "call_local", "reliable")
 func pause(paused_peer : int) -> void:
 	current_paused_peer = paused_peer
-	resume_button.disabled = current_paused_peer != multiplayer.get_unique_id()
+	var is_controlling_player := current_paused_peer == multiplayer.get_unique_id()
+	resume_button.disabled = !is_controlling_player
+	options_button.disabled = !is_controlling_player
 	get_tree().paused = true
 	visible = true
 
@@ -67,3 +78,8 @@ func _on_quit_pressed() -> void:
 func _on_peer_disconnected(peer_id : int) -> void:
 	if current_paused_peer == peer_id:
 		unpause.rpc()
+
+
+func _on_options_pressed() -> void:
+	var options_menu := options_scene.instantiate()
+	add_child(options_menu)
