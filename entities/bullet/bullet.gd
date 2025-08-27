@@ -6,10 +6,14 @@ const SPEED = 600
 @onready var hitbox_component: HitboxComponent = $HitboxComponent
 
 var direction := Vector2.ZERO
+var source_peer_id : int = -1
+var damage := 1
 
 func _ready() -> void:
+	hitbox_component.source_peer_id = source_peer_id
 	life_timer.timeout.connect(_on_life_timer_timeout)
 	hitbox_component.hit_hurtbox.connect(_on_hit_hurtbox)
+	hitbox_component.damage = damage
 
 
 func _process(delta: float) -> void:

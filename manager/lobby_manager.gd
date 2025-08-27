@@ -100,7 +100,7 @@ func _on_peer_disconnected(peer_id : int) -> void:
 	try_all_peers_ready()
 
 
-func _on_peer_connected(peer_id : int) -> void:
+func _on_peer_connected(_peer_id : int) -> void:
 	if is_lobby_closed:
 		return
 	

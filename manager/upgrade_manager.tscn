@@ -1,0 +1,11 @@
+[gd_scene load_steps=6 format=3 uid="uid://82mjnguvslhj"]
+
+[ext_resource type="Script" uid="uid://dbbal1hvd0pw8" path="res://manager/upgrade_manager.gd" id="1_t255f"]
+[ext_resource type="Script" uid="uid://dhccgmwbnm0im" path="res://resources/upgrade/upgrade_resource.gd" id="2_f8rek"]
+[ext_resource type="Resource" uid="uid://cskn6wdsljvpt" path="res://resources/upgrade/fire_rate.tres" id="3_8e571"]
+[ext_resource type="Resource" uid="uid://cy6wklxp4xpve" path="res://resources/upgrade/damage.tres" id="4_eng5n"]
+[ext_resource type="Resource" uid="uid://qftkeep5dlbq" path="res://resources/upgrade/movement_speed.tres" id="5_cqd44"]
+
+[node name="UpgradeManager" type="Node"]
+script = ExtResource("1_t255f")
+available_upgrades = Array[ExtResource("2_f8rek")]([ExtResource("3_8e571"), ExtResource("4_eng5n"), ExtResource("5_cqd44")])

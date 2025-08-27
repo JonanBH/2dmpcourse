@@ -57,7 +57,7 @@ func unpause() -> void:
 
 
 func _on_resume_pressed() -> void:
-	request_unpause.rpc(MultiplayerPeer.TARGET_PEER_SERVER)
+	request_unpause.rpc_id(MultiplayerPeer.TARGET_PEER_SERVER)
 
 
 func _on_quit_pressed() -> void:

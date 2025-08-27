@@ -25,10 +25,12 @@ var current_state : String:
 @onready var hurtbox_component: HurtboxComponent = $HurtboxComponent
 @onready var impact_particles_scene : PackedScene = preload("uid://dq7xj8covnp6s")
 @onready var ground_particles_scene : PackedScene = preload("uid://c5xs14wqlw742")
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+
 
 func _ready() -> void:
 	state_machine.add_states(state_spawn, enter_state_spawn, Callable())
-	state_machine.add_states(state_normal, enter_state_normal, Callable())
+	state_machine.add_states(state_normal, enter_state_normal, leave_state_normal)
 	state_machine.add_states(state_charge_attack, \
 			enter_state_charge_attack, \
 			leave_state_charge_attack)
@@ -69,6 +71,7 @@ func state_spawn() -> void:
 
 
 func enter_state_normal() -> void:
+	animation_player.play("run")
 	if is_multiplayer_authority():
 		acquire_target()
 		target_aquisition_timer.start()
@@ -88,6 +91,10 @@ func state_normal() -> void:
 			state_machine.change_state(state_charge_attack)
 	 
 	flip()
+
+
+func leave_state_normal() -> void:
+	animation_player.play("RESET")
 
 
 func enter_state_charge_attack() -> void:
